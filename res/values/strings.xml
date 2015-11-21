@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">WeatherDemo</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+
+    <string name="weather">Weather:</string>
+    <string name="date">Date:</string>
+    <string name="temperature">Temperature:</string>
+    <string name="wind">Wind:</string>
+    <string name="winp">Winp:</string>
+    <string name="week">Week:</string>
+    
+    <string name="cityname">城市名称</string>
+    <string name="saveConfig">保存设置</string>
+    <string name="cancelConfig">取消设置</string>
+</resources>
