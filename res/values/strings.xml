@@ -14,5 +14,5 @@
     
     <string name="cityname">城市名称</string>
     <string name="saveConfig">保存设置</string>
-    <string name="cancelConfig">取消设置</string>
+    <string name="cancelConfig">更新数据</string>
 </resources>

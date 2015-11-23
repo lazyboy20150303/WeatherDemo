@@ -3,7 +3,6 @@
     android:id="@+id/layout01"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginTop="10dp"
     android:orientation="vertical" >
 
     <RelativeLayout
@@ -21,6 +20,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/temperature"
+                android:textColor="@color/white"
                 android:textSize="35sp" />
 
             <TextView
@@ -28,31 +28,36 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center_vertical"
-                android:text="@string/weather" />
+                android:text="@string/weather"
+                android:textColor="@color/white" />
 
             <TextView
                 android:id="@+id/current_wind"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/wind" />
+                android:text="@string/wind"
+                android:textColor="@color/white" />
 
             <TextView
                 android:id="@+id/current_winp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/winp" />
+                android:text="@string/winp"
+                android:textColor="@color/white" />
 
             <TextView
                 android:id="@+id/current_week"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/week" />
+                android:text="@string/week"
+                android:textColor="@color/white" />
 
             <TextView
                 android:id="@+id/current_date_time"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/date" />
+                android:text="@string/date"
+                android:textColor="@color/white" />
         </LinearLayout>
 
         <ImageView
@@ -69,6 +74,7 @@
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
             android:text="@string/cityname"
+            android:textColor="@color/white"
             android:textSize="20sp" />
     </RelativeLayout>
 
@@ -90,20 +96,23 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center"
-                    android:text="@string/date" />
+                    android:text="@string/date"
+                    android:textColor="@color/white" />
             </TableRow>
 
             <TableRow
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1" >
+                android:layout_weight="1"
+                android:textColor="@color/white" >
 
                 <TextView
                     android:id="@+id/thirdday"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center"
-                    android:text="@string/date" />
+                    android:text="@string/date"
+                    android:textColor="@color/white" />
             </TableRow>
 
             <TableRow
@@ -116,7 +125,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center"
-                    android:text="@string/date" />
+                    android:text="@string/date"
+                    android:textColor="@color/white" />
             </TableRow>
 
             <TableRow
@@ -129,7 +139,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center"
-                    android:text="@string/date" />
+                    android:text="@string/date"
+                    android:textColor="@color/white" />
             </TableRow>
         </TableRow>
 
@@ -208,7 +219,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center"
-                    android:text="@string/temperature" />
+                    android:text="@string/temperature"
+                    android:textColor="@color/white" />
             </TableRow>
 
             <TableRow
@@ -221,7 +233,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center"
-                    android:text="@string/temperature" />
+                    android:text="@string/temperature"
+                    android:textColor="@color/white" />
             </TableRow>
 
             <TableRow
@@ -234,7 +247,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center"
-                    android:text="@string/temperature" />
+                    android:text="@string/temperature"
+                    android:textColor="@color/white" />
             </TableRow>
 
             <TableRow
@@ -248,7 +262,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center"
-                    android:text="@string/temperature" />
+                    android:text="@string/temperature"
+                    android:textColor="@color/white" />
             </TableRow>
         </TableRow>
     </TableLayout>
