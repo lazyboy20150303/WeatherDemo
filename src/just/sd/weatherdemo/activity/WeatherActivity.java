@@ -5,11 +5,9 @@ import java.util.List;
 
 import just.sd.weatherdemo.adaptor.PictureAdaptor;
 import just.sd.weatherdemo.adaptor.WeatherAdaptor;
-import just.sd.weatherdemo.model.Config;
+import just.sd.weatherdemo.config.Config;
+import just.sd.weatherdemo.db.DB;
 import just.sd.weatherdemo.model.Weather;
-
-import com.example.weatherdemo.R;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.drawable.BitmapDrawable;
@@ -22,6 +20,8 @@ import android.view.View.OnClickListener;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.example.weatherdemo.R;
 
 /**
  * app主页面，显示天气信息
@@ -122,7 +122,11 @@ public class WeatherActivity<MainActivity> extends Activity {
 		public void run() {
 			Message msg=new Message();
 			try {
-				weathers = WeatherAdaptor.getWeatherFromK780(Config.CityName);//获取K780天气
+				DB db=new DB(getApplicationContext());
+				db.open();
+				Config.Weatid=db.findid(Config.CityName);
+				db.close();
+				weathers=WeatherAdaptor.getWeatherFromK780(Config.Weatid);//获取K780天气
 				for (Weather weather : weathers) {//图片转换
 					weather.setWeather_day(new PictureAdaptor(getApplicationContext()).getBitMap(weather.getWeather_icon()));
 					weather.setWeather_night(new PictureAdaptor(getApplicationContext()).getBitMap(weather.getWeather_icon1()));
@@ -138,7 +142,6 @@ public class WeatherActivity<MainActivity> extends Activity {
 		switch (resultCode) {
 		case RESULT_OK:
 			Config.CityName=data.getStringExtra("cityname");//城市名称给配置表
-
 			new Thread(run).start();
 
 		default:

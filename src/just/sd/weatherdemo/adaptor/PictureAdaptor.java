@@ -33,7 +33,7 @@ public class PictureAdaptor {
 		int j=url.lastIndexOf(".");
 		String imgindex=url.substring(i,j);
 	    BufferedInputStream bis =
-	    		new BufferedInputStream(context.getAssets().open("img/b/"+imgindex+".png"));
+	    		new BufferedInputStream(context.getAssets().open("img/a/"+imgindex+".png"));
 	    Bitmap bm = BitmapFactory.decodeStream(bis);
 	    return bm;
 	}

@@ -1,4 +1,4 @@
-package just.sd.weatherdemo.model;
+package just.sd.weatherdemo.config;
 
 /**
  * 配置信息
@@ -8,8 +8,12 @@ package just.sd.weatherdemo.model;
 public class Config {
 	
 	public static String CityName;
+	public static int Weatid;
 	
 	public static void LoadDefaultConfig(){
-		CityName="1";
+		CityName="北京";
+		Weatid=1;
 	}
+	
+	
 }

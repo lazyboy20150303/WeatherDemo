@@ -97,10 +97,10 @@ public class WeatherAdaptor {
 	 * @param city 城市名称
 	 * @return 未来7天天气列表
 	 */
-	public static List<Weather> getWeatherFromK780(String city) throws JSONException{
+	public static List<Weather> getWeatherFromK780(int weatid) throws JSONException{
 
 		String requestUrl = "http://api.k780.com:88/?app=weather.future&weaid="+
-				city+"&&appkey=16506&sign=07e825a58434df5d65b32d92a84d14f4&format=json";
+				weatid+"&&appkey=16506&sign=07e825a58434df5d65b32d92a84d14f4&format=json";
 		String result = DataRequest.request("POST",requestUrl);
 		JSONObject data;
 		List<Weather> weathers=new ArrayList<Weather>();

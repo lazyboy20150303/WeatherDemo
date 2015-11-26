@@ -1,17 +1,15 @@
 package just.sd.weatherdemo.activity;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import just.sd.weatherdemo.adaptor.CityAdaptor;
-
-import com.example.weatherdemo.R;
-
+import just.sd.weatherdemo.adaptor.CityAdapter;
+import just.sd.weatherdemo.config.CityConfig;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Looper;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
@@ -19,8 +17,9 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.SimpleAdapter;
 import android.widget.Toast;
+
+import com.example.weatherdemo.R;
 
 /**
  * 配置页，选择城市
@@ -32,50 +31,38 @@ public class ConfigActivity extends Activity {
 
 	String cityname;
 
-	EditText cityNameView;
-	ListView citys;
-	Button savebutton;
-	Button updateButton;
+	EditText cityNameView;//城市input
+	ListView citiesview;//城市列表
+	Button savebutton;//保存配置
+	Button updateButton;//更新城市信息表
 
-	List<Map<String, String>> list;
-	SimpleAdapter simpleAdapter;
+	List<Map<String, String>> list;//城市信息表数据
+	CityAdapter cityAdapter;//list==>citiesview
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		this.setContentView(R.layout.config);
 
-		cityNameView=(EditText)findViewById(R.id.city);//配置城市
+		cityNameView=(EditText)findViewById(R.id.city);
 
-		citys=(ListView)findViewById(R.id.cityList);
+		citiesview=(ListView)findViewById(R.id.cityList);
 
-		list=new ArrayList<Map<String,String>>();
-
-		//TODO 从数据库获取
-		for (int i = 0; i < 30; i++) {
-			Map<String, String> map=new HashMap<String, String>();
-			map.put("db_city", ""+i);
-			list.add(map);
-		}
-
-		simpleAdapter=new SimpleAdapter(getApplicationContext(),
-				this.list, R.layout.cityitem, 
-				new String[]{"db_city"}, 
-				new int[]{R.id.db_city});
-
-		this.citys.setAdapter(simpleAdapter);
-		this.citys.setOnItemClickListener(new OnItemClickListener() {
+		this.citiesview.setOnItemClickListener(new OnItemClickListener() {
 
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
 				@SuppressWarnings("unchecked")
-				Map<String, String> map=(HashMap<String, String>)ConfigActivity.this.citys.getItemAtPosition(position);
-				ConfigActivity.this.cityname=map.get("db_city");
-				cityNameView.setText(cityname);
+				Map<String, String> map=(HashMap<String, String>)ConfigActivity.this.citiesview.getItemAtPosition(position);
+				ConfigActivity.this.cityname=map.get("db_cityname");
+				ConfigActivity.this.cityNameView.setText(cityname);
 			}
 		});
-
+		
+		cityAdapter=new CityAdapter(getApplicationContext(),citiesview);
+		cityAdapter.showAllData();
+		
 		//保存配置信息
 		savebutton=(Button)findViewById(R.id.savebutton);
 
@@ -83,10 +70,8 @@ public class ConfigActivity extends Activity {
 
 			public void onClick(View view){
 
-				String cityname=cityNameView.getText().toString().trim();
-
 				Intent intent=ConfigActivity.this.getIntent();
-				intent.putExtra("cityname", cityname);
+				intent.putExtra("cityname", cityNameView.getText().toString().trim());
 				ConfigActivity.this.setResult(RESULT_OK, intent);
 				ConfigActivity.this.finish();
 			}
@@ -103,14 +88,18 @@ public class ConfigActivity extends Activity {
 			}
 		});
 	}
-
+	
 	Runnable runnable=new Runnable() {
 		@Override
 		public void run() {
-			boolean flat=CityAdaptor.GetCity(getApplicationContext());
+			boolean flat=CityConfig.GetCity(getApplicationContext());
+			Looper.prepare();
 			if (!flat) {
 				Toast.makeText(getApplicationContext(), "获取数据失败", Toast.LENGTH_SHORT).show();
+			}else {
+				Toast.makeText(getApplicationContext(), "数据库更新成功", Toast.LENGTH_SHORT).show();
 			}
+			Looper.loop();
 		}
 	};
 }
