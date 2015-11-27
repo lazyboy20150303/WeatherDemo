@@ -94,7 +94,6 @@ public class DB {
 		for(result.moveToFirst();!result.isAfterLast();result.moveToNext()){
 			Map<String, String> city=new HashMap<>();
 			city.put("db_cityname", result.getString(1));
-			city.put("db_weatid", ""+result.getInt(0));
 			cities.add(city);
 		}
 		return cities;

@@ -14,8 +14,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.content.Context;
-import android.os.Looper;
-import android.widget.Toast;
 
 /**
  * 城市信息适配器

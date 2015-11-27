@@ -6,6 +6,8 @@ import java.util.Map;
 
 import just.sd.weatherdemo.adaptor.CityAdapter;
 import just.sd.weatherdemo.config.CityConfig;
+import just.sd.weatherdemo.config.Config;
+import just.sd.weatherdemo.db.DB;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -29,8 +31,6 @@ import com.example.weatherdemo.R;
  */
 public class ConfigActivity extends Activity {
 
-	String cityname;
-
 	EditText cityNameView;//城市input
 	ListView citiesview;//城市列表
 	Button savebutton;//保存配置
@@ -38,7 +38,8 @@ public class ConfigActivity extends Activity {
 
 	List<Map<String, String>> list;//城市信息表数据
 	CityAdapter cityAdapter;//list==>citiesview
-
+	DB db;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -48,6 +49,8 @@ public class ConfigActivity extends Activity {
 
 		citiesview=(ListView)findViewById(R.id.cityList);
 
+		db=new DB(getApplicationContext());
+		
 		this.citiesview.setOnItemClickListener(new OnItemClickListener() {
 
 			@Override
@@ -55,12 +58,11 @@ public class ConfigActivity extends Activity {
 					int position, long id) {
 				@SuppressWarnings("unchecked")
 				Map<String, String> map=(HashMap<String, String>)ConfigActivity.this.citiesview.getItemAtPosition(position);
-				ConfigActivity.this.cityname=map.get("db_cityname");
-				ConfigActivity.this.cityNameView.setText(cityname);
+				ConfigActivity.this.cityNameView.setText(map.get("db_cityname"));
 			}
 		});
 		
-		cityAdapter=new CityAdapter(getApplicationContext(),citiesview);
+		cityAdapter=new CityAdapter(getApplicationContext(),db,citiesview);
 		cityAdapter.showAllData();
 		
 		//保存配置信息
@@ -71,7 +73,11 @@ public class ConfigActivity extends Activity {
 			public void onClick(View view){
 
 				Intent intent=ConfigActivity.this.getIntent();
-				intent.putExtra("cityname", cityNameView.getText().toString().trim());
+				Config.CityName=cityNameView.getText().toString().trim();
+				db.open();
+				int cityexist=Config.Weatid=db.findid(Config.CityName);//查询城市，如果不存在返回0
+				db.close();
+				intent.putExtra("weaid", cityexist);
 				ConfigActivity.this.setResult(RESULT_OK, intent);
 				ConfigActivity.this.finish();
 			}

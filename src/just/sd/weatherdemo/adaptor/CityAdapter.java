@@ -30,10 +30,10 @@ public class CityAdapter{
 	private int lineSize=30;//每一页记录数
 	private int allRecorders=0;//保存全部记录数
 	private List<Map<String, String>> list;
-	public CityAdapter(Context context, ListView citysview) {
+	public CityAdapter(Context context, DB db, ListView citysview) {
 		this.context=context;
 		this.citysview=citysview;
-		db=new DB(context);
+		this.db=db;
 	}
 
 	/**
@@ -57,8 +57,8 @@ public class CityAdapter{
 		db.close();
 		simpleAdapter=new SimpleAdapter(context,
 				this.list, R.layout.cityitem, 
-				new String[]{"db_cityname","db_weatid"}, 
-				new int[]{R.id.db_cityname,R.id.db_weatid});
+				new String[]{"db_cityname"}, 
+				new int[]{R.id.db_cityname});
 
 		this.citysview.setAdapter(simpleAdapter);
 		
