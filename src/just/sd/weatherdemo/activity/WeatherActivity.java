@@ -3,6 +3,7 @@ package just.sd.weatherdemo.activity;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -13,6 +14,7 @@ import just.sd.weatherdemo.model.Weather;
 import just.sd.weatherdemo.view.MainView;
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -21,6 +23,9 @@ import android.os.Message;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
@@ -39,7 +44,7 @@ import com.example.weatherdemo.R;
 public class WeatherActivity<MainActivity> extends Activity {
 
 	private MainView mView;//主视窗
-	
+
 	//天气窗口控件
 	List<Weather> weathers=null;
 	TextView[] week=new TextView[5];
@@ -52,9 +57,12 @@ public class WeatherActivity<MainActivity> extends Activity {
 	TextView current_winp;
 	TextView current_date;
 
-	//TODO 菜单窗口控件
-	ListView sp_list;
-	
+	ImageButton refresh;
+
+	//菜单窗口控件(常用城市)
+	ListView sp_listview;
+	private static String SP_FAVOURITECITY="favourite_city";
+
 	public Handler handler = new Handler(){
 
 		@SuppressWarnings("deprecation")
@@ -120,11 +128,26 @@ public class WeatherActivity<MainActivity> extends Activity {
 		temperature[4]=(TextView)findViewById(R.id.txt_fifthday);
 		week[4]=(TextView)findViewById(R.id.fifthday);
 		img[4]=(ImageView)findViewById(R.id.img_fifthday);
-		
+
 		//常用城市
-		sp_list=(ListView)findViewById(R.id.common);
+		sp_listview=(ListView)findViewById(R.id.common);
 		initCommon();
-		
+		//点击切换城市
+		sp_listview.setOnItemClickListener(new OnItemClickListener(){
+
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view,
+					int position, long id) {
+				@SuppressWarnings("unchecked")
+				Map<String, String> city=(HashMap<String, String>)WeatherActivity.this.sp_listview.getItemAtPosition(position);
+				String key=city.get("sp_name");
+				String value=city.get("sp_weaid");
+				Config.CityName=key;
+				Config.Weatid=Integer.parseInt(value);
+				new Thread(run).start();
+			}
+		});
+
 		//城市点击事件，更改城市
 		city.setOnClickListener(new OnClickListener() {
 
@@ -134,23 +157,41 @@ public class WeatherActivity<MainActivity> extends Activity {
 				WeatherActivity.this.startActivityForResult(config, 1);
 			}
 		});
+		
+		refresh=(ImageButton)findViewById(R.id.refresh);
+		//刷新
+		refresh.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				new Thread(run).start();
+				Toast.makeText(getApplicationContext(), "更新成功", Toast.LENGTH_SHORT).show();
+			}
+		});
+
 		Config.LoadDefaultConfig();
 		new Thread(run).start();
 	}
 
 	//TODO初始化常用城市表，使用sharepreference数据
 	private void initCommon() {
-		List<Map<String, String>> temp=new ArrayList<>();
-		for(int i=0;i<5;i++){
-			Map<String, String> map=new HashMap<>();
-			map.put("sp_name", i+"");
-			temp.add(map);
+		List<Map<String, String>> sp_list=new ArrayList<>();
+		SharedPreferences share=getSharedPreferences(SP_FAVOURITECITY,Activity.MODE_PRIVATE);//程序私有
+		Map<String, ?> map=share.getAll();
+		Iterator<String> iterator= map.keySet().iterator();
+		while (iterator.hasNext()) {
+			String key=iterator.next().toString();//获取sharePreferences的key
+			String value=map.get(key).toString();//获取sharePreferences的value
+			Map<String, String> c=new HashMap<>();
+			c.put("sp_name", key);
+			c.put("sp_weaid", value);
+			sp_list.add(c);
 		}
 		SimpleAdapter simpleAdapter=new SimpleAdapter(getApplicationContext(),
-				temp, R.layout.cityitem, 
-				new String[]{"sp_name"}, 
-				new int[]{R.id.db_cityname});
-		sp_list.setAdapter(simpleAdapter);
+				sp_list, R.layout.cityitem, 
+				new String[]{"sp_name","sp_weaid"}, 
+				new int[]{R.id.db_cityname,R.id.db_weatid});
+		sp_listview.setAdapter(simpleAdapter);
 	}
 
 	Runnable run = new Runnable() {
@@ -175,13 +216,8 @@ public class WeatherActivity<MainActivity> extends Activity {
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		switch (resultCode) {
 		case RESULT_OK:
-			int flag=data.getIntExtra("weaid",0);//获取城市信息是否更改成功
-			if (flag!=0) {
-				new Thread(run).start();
-			}else {
-				Toast.makeText(getApplicationContext(), "该城市找不到", Toast.LENGTH_SHORT).show();
-			}
-
+			initCommon();//刷新sp_listview列表
+			new Thread(run).start();
 		default:
 			break;
 		}

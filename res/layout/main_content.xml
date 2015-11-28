@@ -60,6 +60,15 @@
                 android:textColor="@color/white" />
         </LinearLayout>
 
+        <ImageButton
+            android:id="@+id/refresh"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:background="@drawable/cloud_refresh"
+            android:contentDescription="@string/app_name" />
+
         <ImageView
             android:id="@+id/img_current"
             android:layout_width="wrap_content"

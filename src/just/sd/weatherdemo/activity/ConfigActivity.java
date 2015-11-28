@@ -10,6 +10,7 @@ import just.sd.weatherdemo.config.Config;
 import just.sd.weatherdemo.db.DB;
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Looper;
 import android.view.View;
@@ -33,13 +34,16 @@ public class ConfigActivity extends Activity {
 
 	EditText cityNameView;//城市input
 	ListView citiesview;//城市列表
+	Button savePreference;//设为常用
 	Button savebutton;//保存配置
 	Button updateButton;//更新城市信息表
 
 	List<Map<String, String>> list;//城市信息表数据
 	CityAdapter cityAdapter;//list==>citiesview
 	DB db;
-	
+
+	private static String SP_FAVOURITECITY="favourite_city";
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -50,7 +54,7 @@ public class ConfigActivity extends Activity {
 		citiesview=(ListView)findViewById(R.id.cityList);
 
 		db=new DB(getApplicationContext());
-		
+
 		this.citiesview.setOnItemClickListener(new OnItemClickListener() {
 
 			@Override
@@ -61,10 +65,37 @@ public class ConfigActivity extends Activity {
 				ConfigActivity.this.cityNameView.setText(map.get("db_cityname"));
 			}
 		});
-		
+
 		cityAdapter=new CityAdapter(getApplicationContext(),db,citiesview);
 		cityAdapter.showAllData();
-		
+
+		//该城市名保存到sharePreference中
+		savePreference=(Button)findViewById(R.id.savePreference);
+
+		savePreference.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				SharedPreferences sp=getSharedPreferences(SP_FAVOURITECITY, Activity.MODE_PRIVATE);
+				SharedPreferences.Editor editor=sp.edit();
+				String cityname=cityNameView.getText().toString().trim();
+				if(cityname.isEmpty()){
+					Toast.makeText(getApplicationContext(), "请输入城市", Toast.LENGTH_SHORT).show();
+				}else {
+					db.open();
+					int weatid=db.findid(cityname);
+					db.close();
+					if(weatid!=0){
+						editor.putInt(cityname, weatid);//将cityname和weaid分别作为key,value写入sharepreferences
+						editor.commit();
+						Toast.makeText(getApplicationContext(), "设置偏好成功", Toast.LENGTH_SHORT).show();
+					}else {
+						Toast.makeText(getApplicationContext(), "该城市不存在", Toast.LENGTH_SHORT).show();
+					}
+				}
+			}
+		});
+
 		//保存配置信息
 		savebutton=(Button)findViewById(R.id.savebutton);
 
@@ -73,13 +104,21 @@ public class ConfigActivity extends Activity {
 			public void onClick(View view){
 
 				Intent intent=ConfigActivity.this.getIntent();
-				Config.CityName=cityNameView.getText().toString().trim();
-				db.open();
-				int cityexist=Config.Weatid=db.findid(Config.CityName);//查询城市，如果不存在返回0
-				db.close();
-				intent.putExtra("weaid", cityexist);
-				ConfigActivity.this.setResult(RESULT_OK, intent);
-				ConfigActivity.this.finish();
+				String cityname=Config.CityName=cityNameView.getText().toString().trim();
+				if(cityname.isEmpty()){
+					Toast.makeText(getApplicationContext(), "请输入城市", Toast.LENGTH_SHORT).show();
+				}else {
+					db.open();
+					int cityexist=Config.Weatid=db.findid(Config.CityName);//查询城市，如果不存在返回0
+					db.close();
+					if (cityexist==0) {
+						Toast.makeText(getApplicationContext(), "该城市不存在", Toast.LENGTH_SHORT).show();
+					}else {
+						intent.putExtra("weaid", cityexist);
+						ConfigActivity.this.setResult(RESULT_OK, intent);
+						ConfigActivity.this.finish();
+					}
+				}
 			}
 		});
 
@@ -94,7 +133,7 @@ public class ConfigActivity extends Activity {
 			}
 		});
 	}
-	
+
 	Runnable runnable=new Runnable() {
 		@Override
 		public void run() {

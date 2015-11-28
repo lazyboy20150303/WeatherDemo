@@ -16,7 +16,7 @@ import org.json.JSONObject;
 import android.content.Context;
 
 /**
- * 城市信息适配器
+ * 城市信息获取，用作创建和更新数据库
  * from:api.k780.com
  * @author sunqing
  *日期：2015.11.21
